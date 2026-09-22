@@ -1,7 +1,8 @@
 CACHE MANIFEST
-# v2.0 - Clean Cache List
+# v3.0 - Unified Final Host
 
 CACHE:
+index.html
 style.css
 goldhen_2.4b18.10.bin
 slopkit/chain_lapse.js
