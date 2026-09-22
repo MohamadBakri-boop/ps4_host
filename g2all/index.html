@@ -12,10 +12,9 @@ var isPS4 = match !== null;
 var fwVersion = isPS4 ? match[1] : "Unknown";
 var fwNum = parseFloat(fwVersion);
 
-// دالة إظهار الأخطاء أمنة ومعدلة لعمل النص بدون مشاكل
 function onScriptError() {
     var el = document.getElementById("msgs");
-    if (el) el.innerHTML = "Content not Found! - Clear Browser Data and Re-Install Cache ...";
+    if (el) el.innerHTML = "حدث خطأ أثناء تحميل السكريبت! أعد تشغيل المتصفح.";
 }
 
 if (!isPS4) {
@@ -24,70 +23,48 @@ if (!isPS4) {
         if (el) el.innerHTML = "Only for PS4 with Firmware 7.00 to 13.00";
     });
 } else {
-    // 1. آلية توجيه الكاش حسب الاصدار
-    if (window.applicationCache.status == '0') {
-        if (fwNum >= 7.00 && fwNum <= 8.52) {
-            window.location.replace("cache700.html");
-        } else if (fwNum >= 9.00 && fwNum <= 9.60) {
-            window.location.replace("cache900.html");
-        } else if (fwNum >= 10.00 && fwNum <= 11.02) {
-            window.location.replace("cachecss.html");
-        } else if (fwNum >= 11.50 && fwNum <= 13.00) {
-            window.location.replace("cacheslopkit.html");
-        } else {
+    // التوجيه للكاش عند عدم التثبيت
+    if (window.applicationCache.status === 0) {
+        if (fwNum >= 7.00 && fwNum <= 8.52) window.location.replace("cache700.html");
+        else if (fwNum >= 9.00 && fwNum <= 9.60) window.location.replace("cache900.html");
+        else if (fwNum >= 10.00 && fwNum <= 11.02) window.location.replace("cachecss.html");
+        else if (fwNum >= 11.50 && fwNum <= 13.00) window.location.replace("cacheslopkit.html");
+        else {
             document.addEventListener("DOMContentLoaded", () => {
                 var el = document.getElementById("msgs");
                 if (el) el.innerHTML = 'Unsupported Firmware: <span style="color: red;">' + fwVersion + '</span>';
             });
         }
     } else {
-        // 2. آلية تشغيل السكريبتات أوتوماتيكياً
-        if (fwNum >= 7.00 && fwNum <= 8.52) {
-            var script = document.createElement('script');
-            script.type = 'module';
-            script.src = "700/alert.js";
-            script.onerror = onScriptError;
-            document.head.appendChild(script);
-        }
-        else if (fwNum >= 9.00 && fwNum <= 9.60) {
-            var script = document.createElement('script');
-            script.type = 'module';
-            script.src = "900/alert.js";
-            script.onerror = onScriptError;
-            document.head.appendChild(script);
-        }
-        else if (fwNum >= 10.00 && fwNum <= 11.02) {
-            var script = document.createElement('script');
-            script.src = "css/main.js";
-            script.onerror = onScriptError;
-            script.onload = function () {
-                setTimeout(function () {
-                    if (typeof doJb === 'function') {
-                        doJb();
-                    }
-                }, 500);
-            };
-            document.head.appendChild(script);
-        }
-        else if (fwNum >= 11.50 && fwNum <= 12.02) {
-            var script = document.createElement('script');
-            script.type = 'module';
-            script.src = "slopkit/chain_lapse.js";
-            script.onerror = onScriptError;
-            document.head.appendChild(script);
-        }
-        else if (fwNum >= 12.50 && fwNum <= 13.00) {
-            var script = document.createElement('script');
-            script.type = 'module';
-            script.src = "slopkit/chain_poops.js";
-            script.onerror = onScriptError;
-            document.head.appendChild(script);
-        }
+        // تشغيل السكريبتات تلقائياً عند وجود الكاش
+        document.addEventListener("DOMContentLoaded", () => {
+            if (fwNum >= 7.00 && fwNum <= 8.52) {
+                let s = document.createElement('script');
+                s.type = 'module'; s.src = "700/alert.js"; s.onerror = onScriptError;
+                document.head.appendChild(s);
+            } else if (fwNum >= 9.00 && fwNum <= 9.60) {
+                let s = document.createElement('script');
+                s.type = 'module'; s.src = "900/alert.js"; s.onerror = onScriptError;
+                document.head.appendChild(s);
+            } else if (fwNum >= 10.00 && fwNum <= 11.02) {
+                let s = document.createElement('script');
+                s.src = "css/main.js"; s.onerror = onScriptError;
+                s.onload = () => { setTimeout(() => { if (typeof doJb === 'function') doJb(); }, 500); };
+                document.head.appendChild(s);
+            } else if (fwNum >= 11.50 && fwNum <= 12.02) {
+                let s = document.createElement('script');
+                s.type = 'module'; s.src = "slopkit/chain_lapse.js"; s.onerror = onScriptError;
+                document.head.appendChild(s);
+            } else if (fwNum >= 12.50 && fwNum <= 13.00) {
+                let s = document.createElement('script');
+                s.type = 'module'; s.src = "slopkit/chain_poops.js"; s.onerror = onScriptError;
+                document.head.appendChild(s);
+            }
+        });
     }
 }
 </script>
 
-<!-- تصميم واستتايل index_my الأصلي الخاص بك 100% -->
 <h1>PS4 7.00 - 13.00 FW GoldHEN Host by Yossaf</h1>
 <hr>
 <br>
