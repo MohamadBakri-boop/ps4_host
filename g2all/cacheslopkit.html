@@ -13,19 +13,16 @@
         }
         
         function DisplayCacheProgress() {
-            document.getElementById("msgs").innerHTML = "تم تثبيت الكاش بنجاح! اغلق المتصفح واقطع الإنترنت.";
+            document.getElementById("msgs").innerHTML = "تم تثبيت الكاش بنجاح! اغلق المتصفح واقطع الإنترنت ثم افتح الصفحة مجدداً.";
         }
 
         window.applicationCache.addEventListener("progress", DLProgress, false);
         window.applicationCache.addEventListener("cached", DisplayCacheProgress, false);
         window.applicationCache.addEventListener("updateready", function() {
-            window.applicationCache.swapCache();
+            try { window.applicationCache.swapCache(); } catch(e){}
             DisplayCacheProgress();
         }, false);
         window.applicationCache.addEventListener("noupdate", DisplayCacheProgress, false);
-        window.applicationCache.addEventListener("error", function() {
-            document.getElementById("msgs").innerHTML = "خطأ في التثبيت! امسح بيانات المتصفح وأعد المحاولة.";
-        }, false);
     </script>
 </head>
 <body>
