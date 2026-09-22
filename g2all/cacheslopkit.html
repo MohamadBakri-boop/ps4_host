@@ -13,7 +13,10 @@
         }
         
         function DisplayCacheProgress() {
-            document.getElementById("msgs").innerHTML = "تم تثبيت الكاش بنجاح! اغلق المتصفح واقطع الإنترنت ثم افتح الصفحة مجدداً.";
+            document.getElementById("msgs").innerHTML = "تم تثبيت الكاش بنجاح! جاري التوجه لتفعيل GoldHEN...";
+            setTimeout(function(){
+                window.location.href = "index.html";
+            }, 1500);
         }
 
         window.applicationCache.addEventListener("progress", DLProgress, false);
@@ -22,7 +25,11 @@
             try { window.applicationCache.swapCache(); } catch(e){}
             DisplayCacheProgress();
         }, false);
-        window.applicationCache.addEventListener("noupdate", DisplayCacheProgress, false);
+        
+        // إذا كان الكاش مثبتاً بالفعل مسبقاً، احوله فوراً لـ index.html
+        window.applicationCache.addEventListener("noupdate", function() {
+            window.location.href = "index.html";
+        }, false);
     </script>
 </head>
 <body>
