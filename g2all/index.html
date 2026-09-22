@@ -1,74 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html manifest="slopkit.manifest">
 <head>
+<meta charset="UTF-8">
 <title>PS4 7.00 - 13.00 FW GoldHEN Host by Yossaf</title>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="style.css">
+<script>
+    function DLProgress(e) {
+        if (e.lengthComputable) {
+            var Percent = Math.round((e.loaded / e.total) * 100);
+            document.getElementById("msgs").innerHTML = "جاري تثبيت الكاش لأول مرة: " + Percent + "%";
+        }
+    }
+    
+    function DisplayCacheProgress() {
+        document.getElementById("msgs").innerHTML = "تم تثبيت الكاش بنجاح! اغلق المتصفح واقطع الإنترنت الآن.";
+    }
+
+    window.applicationCache.addEventListener("progress", DLProgress, false);
+    window.applicationCache.addEventListener("cached", DisplayCacheProgress, false);
+    window.applicationCache.addEventListener("updateready", function() {
+        try { window.applicationCache.swapCache(); } catch(e){}
+        DisplayCacheProgress();
+    }, false);
+
+    function loadScript() {
+        var uaFull = navigator.userAgent;
+        var match = uaFull.match(/PlayStation 4[ /]([\d.]+)/i);
+        var isPS4 = match !== null;
+        var fwVersion = isPS4 ? match[1] : "Unknown";
+        var fwNum = parseFloat(fwVersion);
+
+        if (!isPS4) {
+            document.getElementById("msgs").innerHTML = "Only for PS4 with Firmware 7.00 to 13.00";
+            return;
+        }
+
+        document.getElementById("msgs").innerHTML = "Loading GoldHEN v2.4b18.10... Please Wait";
+
+        if (fwNum >= 7.00 && fwNum <= 8.52) {
+            let s = document.createElement('script'); s.type = 'module'; s.src = "700/alert.js"; document.head.appendChild(s);
+        } else if (fwNum >= 9.00 && fwNum <= 9.60) {
+            let s = document.createElement('script'); s.type = 'module'; s.src = "900/alert.js"; document.head.appendChild(s);
+        } else if (fwNum >= 10.00 && fwNum <= 11.02) {
+            let s = document.createElement('script'); s.src = "css/main.js";
+            s.onload = () => { setTimeout(() => { if (typeof doJb === 'function') doJb(); }, 500); };
+            document.head.appendChild(s);
+        } else if (fwNum >= 11.50 && fwNum <= 12.02) {
+            let s = document.createElement('script'); s.type = 'module'; s.src = "slopkit/chain_lapse.js"; document.head.appendChild(s);
+        } else if (fwNum >= 12.50 && fwNum <= 13.00) {
+            let s = document.createElement('script'); s.type = 'module'; s.src = "slopkit/chain_poops.js"; document.head.appendChild(s);
+        }
+    }
+
+    // تشغيل الثغرة إذا كان الكاش محفوضاً مسبقاً
+    window.applicationCache.addEventListener("noupdate", loadScript, false);
+    window.addEventListener("load", function() {
+        if (window.applicationCache.status === window.applicationCache.IDLE || window.applicationCache.status === 0) {
+            loadScript();
+        }
+    });
+</script>
 </head>
 <body>
-<script>
-var uaFull = navigator.userAgent;
-var match = uaFull.match(/PlayStation 4[ /]([\d.]+)/i);
-var isPS4 = match !== null;
-var fwVersion = isPS4 ? match[1] : "Unknown";
-var fwNum = parseFloat(fwVersion);
-
-function onScriptError() {
-    var el = document.getElementById("msgs");
-    if (el) el.innerHTML = "حدث خطأ أثناء تحميل السكريبت! أعد تشغيل المتصفح.";
-}
-
-if (!isPS4) {
-    document.addEventListener("DOMContentLoaded", () => {
-        var el = document.getElementById("msgs");
-        if (el) el.innerHTML = "Only for PS4 with Firmware 7.00 to 13.00";
-    });
-} else {
-    // التوجيه للكاش عند عدم التثبيت
-    if (window.applicationCache.status === 0) {
-        if (fwNum >= 7.00 && fwNum <= 8.52) window.location.replace("cache700.html");
-        else if (fwNum >= 9.00 && fwNum <= 9.60) window.location.replace("cache900.html");
-        else if (fwNum >= 10.00 && fwNum <= 11.02) window.location.replace("cachecss.html");
-        else if (fwNum >= 11.50 && fwNum <= 13.00) window.location.replace("cacheslopkit.html");
-        else {
-            document.addEventListener("DOMContentLoaded", () => {
-                var el = document.getElementById("msgs");
-                if (el) el.innerHTML = 'Unsupported Firmware: <span style="color: red;">' + fwVersion + '</span>';
-            });
-        }
-    } else {
-        // تشغيل السكريبتات تلقائياً عند وجود الكاش
-        document.addEventListener("DOMContentLoaded", () => {
-            if (fwNum >= 7.00 && fwNum <= 8.52) {
-                let s = document.createElement('script');
-                s.type = 'module'; s.src = "700/alert.js"; s.onerror = onScriptError;
-                document.head.appendChild(s);
-            } else if (fwNum >= 9.00 && fwNum <= 9.60) {
-                let s = document.createElement('script');
-                s.type = 'module'; s.src = "900/alert.js"; s.onerror = onScriptError;
-                document.head.appendChild(s);
-            } else if (fwNum >= 10.00 && fwNum <= 11.02) {
-                let s = document.createElement('script');
-                s.src = "css/main.js"; s.onerror = onScriptError;
-                s.onload = () => { setTimeout(() => { if (typeof doJb === 'function') doJb(); }, 500); };
-                document.head.appendChild(s);
-            } else if (fwNum >= 11.50 && fwNum <= 12.02) {
-                let s = document.createElement('script');
-                s.type = 'module'; s.src = "slopkit/chain_lapse.js"; s.onerror = onScriptError;
-                document.head.appendChild(s);
-            } else if (fwNum >= 12.50 && fwNum <= 13.00) {
-                let s = document.createElement('script');
-                s.type = 'module'; s.src = "slopkit/chain_poops.js"; s.onerror = onScriptError;
-                document.head.appendChild(s);
-            }
-        });
-    }
-}
-</script>
-
-<h1>PS4 7.00 - 13.00 FW GoldHEN Host by Yossaf</h1>
-<hr>
-<br>
-<h1 id="msgs" style="font-size: 30px;margin-top: 77px;margin-bottom: 455px;">Loading GoldHEN v2.4b18.10... Please Wait</h1>
-<h1 style="margin-top: 43px;">Special Thanks to:<a href="https://twitter.com/_AlAzif" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@_AlAzif</a>ChendoChap<a href="https://x.com/Kameleonre_" style="color: #f31414;margin-left: 10px;margin-right: 10px;">@Kameleonre_</a>SiSTR0 Abc</h1>
+    <h1>PS4 7.00 - 13.00 FW GoldHEN Host by Yossaf</h1>
+    <hr><br>
+    <h1 id="msgs" style="font-size: 30px; margin-top: 77px; margin-bottom: 455px;">جاري تجهيز الكاش...</h1>
+    <h1 style="margin-top: 43px;">Special Thanks to: @_AlAzif ChendoChap @Kameleonre_ SiSTR0 Abc</h1>
 </body>
 </html>
