@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>PS4 7.00 - 13.00 FW GoldHEN Host by Yossaf</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../style.css">
 <script>
     function DLProgress(e) {
         if (e.lengthComputable) {
@@ -27,15 +27,8 @@
         }, false);
     }
 
-    function onScriptError() {
-        var msgs = document.getElementById("msgs");
-        if (msgs) msgs.innerHTML = "حدث خطأ أثناء تحميل الثغرة! أعد فتح المتصفح.";
-    }
-
     function runExploit() {
         var msgs = document.getElementById("msgs");
-        if (msgs) msgs.innerHTML = "Loading GoldHEN v2.4b18.10... Please Wait";
-
         var uaFull = navigator.userAgent;
         var match = uaFull.match(/PlayStation 4[ /]([\d.]+)/i);
         var isPS4 = match !== null;
@@ -47,30 +40,41 @@
             return;
         }
 
-        setTimeout(function() {
-            if (fwNum >= 7.00 && fwNum <= 8.52) {
-                let s = document.createElement('script'); s.type = 'module'; s.src = "700/alert.js"; s.onerror = onScriptError; document.head.appendChild(s);
-            } else if (fwNum >= 9.00 && fwNum <= 9.60) {
-                let s = document.createElement('script'); s.type = 'module'; s.src = "900/alert.js"; s.onerror = onScriptError; document.head.appendChild(s);
-            } else if (fwNum >= 10.00 && fwNum <= 11.02) {
-                let s = document.createElement('script'); s.src = "css/main.js"; s.onerror = onScriptError;
-                s.onload = () => { setTimeout(() => { if (typeof doJb === 'function') doJb(); }, 500); };
-                document.head.appendChild(s);
-            } else if (fwNum >= 11.50 && fwNum <= 12.02) {
-                let s = document.createElement('script'); s.type = 'module'; s.src = "slopkit/chain_lapse.js"; s.onerror = onScriptError; document.head.appendChild(s);
-            } else if (fwNum >= 12.50 && fwNum <= 13.00) {
-                let s = document.createElement('script'); s.type = 'module'; s.src = "slopkit/chain_poops.js"; s.onerror = onScriptError; document.head.appendChild(s);
-            } else {
-                if (msgs) msgs.innerHTML = 'Unsupported Firmware: <span style="color: red;">' + fwVersion + '</span>';
+        if (msgs) msgs.innerHTML = "Loading GoldHEN v2.4b18.10... Please Wait";
+
+        var scriptPath = "";
+        if (fwNum >= 7.00 && fwNum <= 8.52) scriptPath = "700/alert.js";
+        else if (fwNum >= 9.00 && fwNum <= 9.60) scriptPath = "900/alert.js";
+        else if (fwNum >= 10.00 && fwNum <= 11.02) scriptPath = "css/main.js";
+        else if (fwNum >= 11.50 && fwNum <= 12.02) scriptPath = "slopkit/chain_lapse.js";
+        else if (fwNum >= 12.50 && fwNum <= 13.00) scriptPath = "slopkit/chain_poops.js";
+
+        if (scriptPath !== "") {
+            var s = document.createElement('script');
+            if (fwNum < 10.00 || fwNum >= 11.50) {
+                s.type = 'module';
             }
-        }, 300);
+            s.src = scriptPath;
+            s.onerror = function() {
+                if (msgs) msgs.innerHTML = "حدث خطأ أثناء تحميل الثغرة! أعد فتح المتصفح.";
+            };
+            if (fwNum >= 10.00 && fwNum <= 11.02) {
+                s.onload = function() {
+                    setTimeout(function() { if (typeof doJb === 'function') doJb(); }, 500);
+                };
+            }
+            document.head.appendChild(s);
+        } else {
+            if (msgs) msgs.innerHTML = 'Unsupported Firmware: <span style="color: red;">' + fwVersion + '</span>';
+        }
     }
 
-    // تشغيل مباشر فور تحميل عناصر الصفحة بدون النظر لحالة الـ Cache Event
     document.addEventListener("DOMContentLoaded", function() {
-        if (!navigator.onLine || (window.applicationCache && window.applicationCache.status !== 0)) {
-            runExploit();
-        }
+        setTimeout(function() {
+            if (!navigator.onLine || (window.applicationCache && window.applicationCache.status !== 0)) {
+                runExploit();
+            }
+        }, 500);
     });
 </script>
 </head>
