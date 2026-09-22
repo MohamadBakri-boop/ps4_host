@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>PS4 7.00 - 13.00 FW GoldHEN Host by Yossaf</title>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="style.css">
 <script>
     function DLProgress(e) {
         if (e.lengthComputable) {
@@ -50,31 +50,31 @@
         else if (fwNum >= 12.50 && fwNum <= 13.00) scriptPath = "slopkit/chain_poops.js";
 
         if (scriptPath !== "") {
-            var s = document.createElement('script');
-            if (fwNum < 10.00 || fwNum >= 11.50) {
-                s.type = 'module';
-            }
-            s.src = scriptPath;
-            s.onerror = function() {
-                if (msgs) msgs.innerHTML = "حدث خطأ أثناء تحميل الثغرة! أعد فتح المتصفح.";
-            };
-            if (fwNum >= 10.00 && fwNum <= 11.02) {
-                s.onload = function() {
-                    setTimeout(function() { if (typeof doJb === 'function') doJb(); }, 500);
+            setTimeout(function() {
+                var s = document.createElement('script');
+                if (fwNum < 10.00 || fwNum >= 11.50) {
+                    s.type = 'module';
+                }
+                s.src = scriptPath;
+                s.onerror = function() {
+                    if (msgs) msgs.innerHTML = "حدث خطأ أثناء تحميل الثغرة! أعد فتح المتصفح.";
                 };
-            }
-            document.head.appendChild(s);
+                if (fwNum >= 10.00 && fwNum <= 11.02) {
+                    s.onload = function() {
+                        setTimeout(function() { if (typeof doJb === 'function') doJb(); }, 500);
+                    };
+                }
+                document.head.appendChild(s);
+            }, 1000);
         } else {
             if (msgs) msgs.innerHTML = 'Unsupported Firmware: <span style="color: red;">' + fwVersion + '</span>';
         }
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(function() {
-            if (!navigator.onLine || (window.applicationCache && window.applicationCache.status !== 0)) {
-                runExploit();
-            }
-        }, 500);
+        if (!navigator.onLine || (window.applicationCache && window.applicationCache.status !== 0)) {
+            runExploit();
+        }
     });
 </script>
 </head>
