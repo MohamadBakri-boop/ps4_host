@@ -135,6 +135,54 @@ h1 {
 }
 
 /* -------------------------------------------------------------
+   Install stats — success / fail counter shown on the cache
+   install pages (cache700 / cache900 / cachecss). Counts are
+   per-device (stored in localStorage on the PS4's own browser),
+   not a shared site-wide counter.
+   ------------------------------------------------------------- */
+
+.loader-stats {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin: 16px 0 0;
+}
+
+.stat {
+  display: inline-block;
+  direction: ltr;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  border-radius: 999px;
+  padding: 6px 16px;
+  margin: 4px 5px;
+  border: 1px solid transparent;
+}
+
+.stat b {
+  font-size: 13px;
+  margin: 0 3px;
+}
+
+.stat-ok {
+  color: #7fd0a0;
+  background: rgba(127,208,160,0.10);
+  border-color: rgba(127,208,160,0.35);
+}
+
+.stat-fail {
+  color: #e0857a;
+  background: rgba(224,133,122,0.10);
+  border-color: rgba(224,133,122,0.35);
+}
+
+/* -------------------------------------------------------------
    Firmware grid
    ------------------------------------------------------------- */
 
